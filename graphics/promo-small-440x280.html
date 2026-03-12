@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Small Promo Tile — 440×280</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 440px; height: 280px; overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    background: #0c0c0e;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Background effects */
+  .bg {
+    position: absolute; inset: 0; z-index: 0;
+    overflow: hidden;
+  }
+
+  .bg::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    top: -80px; right: -60px;
+    background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+    opacity: 0.15;
+    filter: blur(60px);
+  }
+  .bg::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    bottom: -60px; left: -40px;
+    background: radial-gradient(circle, #a78bfa 0%, transparent 70%);
+    opacity: 0.1;
+    filter: blur(50px);
+  }
+
+  /* Grid pattern */
+  .grid-pattern {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .content {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    gap: 14px;
+  }
+
+  /* Logo mark */
+  .logo-mark {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #6366f1, #a78bfa);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px rgba(99,102,241,0.3), 0 0 0 1px rgba(255,255,255,0.08) inset;
+  }
+  .logo-mark svg { width: 28px; height: 28px; }
+
+  .title {
+    font-size: 26px; font-weight: 800; color: #fafafa;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .tagline {
+    font-size: 13px; color: #71717a;
+    font-weight: 500;
+    max-width: 320px;
+    line-height: 1.4;
+  }
+  .tagline em {
+    font-style: normal;
+    color: #a78bfa;
+    font-weight: 600;
+  }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: #818cf8;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grid-pattern"></div>
+
+  <div class="content">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+    <div class="title">Skill Scraper</div>
+    <div class="tagline">Install <em>Claude Code skills</em> from GitHub with one click</div>
+    <div class="badge">~/.claude/skills/</div>
+  </div>
+</body>
+</html>

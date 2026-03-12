@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Marquee — 1400×560</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1400px; height: 560px; overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    background: #0c0c0e;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Background */
+  .bg-grain {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  .bg-glow { position: absolute; z-index: 0; border-radius: 50%; filter: blur(120px); }
+  .bg-glow.a { width: 500px; height: 500px; top: -200px; left: 200px; background: #6366f1; opacity: 0.12; }
+  .bg-glow.b { width: 400px; height: 400px; bottom: -200px; right: 300px; background: #a78bfa; opacity: 0.08; }
+  .bg-glow.c { width: 300px; height: 300px; top: 100px; right: 100px; background: #22c55e; opacity: 0.05; }
+
+  .grid-pattern {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 60% 80% at 30% 50%, black 20%, transparent 100%);
+  }
+
+  /* Left content */
+  .left {
+    position: relative; z-index: 1;
+    padding: 0 80px;
+    flex-shrink: 0;
+    width: 640px;
+  }
+
+  .logo-row {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .logo-mark {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #6366f1, #a78bfa);
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px rgba(99,102,241,0.25), 0 0 0 1px rgba(255,255,255,0.08) inset;
+  }
+  .logo-mark svg { width: 26px; height: 26px; }
+
+  .logo-text {
+    font-size: 28px; font-weight: 800; color: #fafafa;
+    letter-spacing: -0.5px;
+  }
+
+  h1 {
+    font-size: 42px; font-weight: 800; color: #fafafa;
+    line-height: 1.15; letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  h1 .accent {
+    background: linear-gradient(135deg, #818cf8, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    font-size: 16px; color: #71717a;
+    line-height: 1.6; max-width: 420px;
+    margin-bottom: 28px;
+  }
+
+  .steps {
+    display: flex; gap: 24px;
+  }
+  .step {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .step-num {
+    width: 28px; height: 28px;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #818cf8;
+    flex-shrink: 0;
+  }
+  .step-text {
+    font-size: 12px; font-weight: 500; color: #a1a1aa;
+  }
+
+  /* Right side: floating popup mockup */
+  .right {
+    position: relative; z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .popup-float {
+    width: 340px;
+    background: #18181b;
+    border-radius: 14px;
+    border: 1px solid #27272a;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    overflow: hidden;
+    transform: rotate(-2deg) translateY(-10px);
+  }
+  .popup-float .inner { padding: 16px; }
+
+  .popup-float .popup-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid #27272a;
+  }
+  .popup-float .popup-header h2 { font-size: 15px; font-weight: 600; color: #fafafa; }
+  .popup-float .popup-header .icon {
+    width: 20px; height: 20px; background: #6366f1; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .popup-float .popup-header .icon svg { width: 12px; height: 12px; }
+
+  .popup-float .found { font-size: 13px; color: #a1a1aa; margin-bottom: 10px; }
+  .popup-float .found b { color: #fafafa; font-weight: 600; }
+
+  .popup-float .skills-list {
+    list-style: none; border: 1px solid #27272a;
+    border-radius: 8px; margin-bottom: 12px;
+  }
+  .popup-float .skills-list li {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; border-bottom: 1px solid #27272a;
+  }
+  .popup-float .skills-list li:last-child { border-bottom: none; }
+  .popup-float .skills-list input[type="checkbox"] {
+    accent-color: #818cf8; width: 13px; height: 13px;
+  }
+  .popup-float .skill-name { font-weight: 500; color: #e4e4e7; font-size: 12.5px; }
+
+  .popup-float .btn {
+    width: 100%; height: 38px;
+    background: #6366f1; color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .popup-float .btn svg { width: 13px; height: 13px; }
+
+  /* Floating terminal snippet */
+  .terminal-float {
+    position: absolute;
+    bottom: 30px; right: 20px;
+    width: 320px;
+    background: #0c0c0e;
+    border: 1px solid #27272a;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    transform: rotate(1deg);
+  }
+  .terminal-bar {
+    height: 28px; background: #18181b;
+    border-bottom: 1px solid #27272a;
+    display: flex; align-items: center; padding: 0 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #52525b;
+  }
+  .terminal-body {
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; line-height: 1.6; color: #a1a1aa;
+  }
+  .terminal-body .prompt { color: #4ade80; }
+  .terminal-body .cmd { color: #e4e4e7; }
+  .terminal-body .success { color: #4ade80; }
+</style>
+</head>
+<body>
+  <div class="bg-grain"></div>
+  <div class="bg-glow a"></div>
+  <div class="bg-glow b"></div>
+  <div class="bg-glow c"></div>
+  <div class="grid-pattern"></div>
+
+  <div class="left">
+    <div class="logo-row">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+      </div>
+      <div class="logo-text">Skill Scraper</div>
+    </div>
+    <h1>Install <span class="accent">Claude Code<br>skills</span> from GitHub</h1>
+    <div class="subtitle">Browse any repo with SKILL.md files, pick the skills you want, and install them to ~/.claude/skills/ with a single command.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Browse GitHub</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Select skills</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Paste & install</div></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="popup-float">
+      <div class="inner">
+        <div class="popup-header">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+          <h2>Skill Scraper</h2>
+        </div>
+        <div class="found">Found <b>6</b> skills in <b>anthropics/skills</b></div>
+        <ul class="skills-list">
+          <li><input type="checkbox" checked><span class="skill-name">frontend-design</span></li>
+          <li><input type="checkbox" checked><span class="skill-name">claude-api</span></li>
+          <li><input type="checkbox"><span class="skill-name">remotion-best-practices</span></li>
+          <li><input type="checkbox" checked><span class="skill-name">snapshot-testing</span></li>
+          <li><input type="checkbox"><span class="skill-name">composable-architecture</span></li>
+          <li><input type="checkbox" checked><span class="skill-name">modern-swiftui</span></li>
+        </ul>
+        <button class="btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy Install Command (4)
+        </button>
+      </div>
+    </div>
+
+    <div class="terminal-float">
+      <div class="terminal-bar">Terminal</div>
+      <div class="terminal-body">
+        <span class="prompt">$ </span><span class="cmd">mkdir -p ~/.claude/skills/frontend-design && ...</span><br>
+        <span class="success">Installed frontend-design ✓</span><br>
+        <span class="success">Installed claude-api ✓</span><br>
+        <span class="success">Installed snapshot-testing ✓</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Screenshot 1 — Single Skill Detected</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1280px;
+    height: 800px;
+    overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    background: #0c0c0e;
+    position: relative;
+  }
+
+  /* Atmospheric background */
+  .bg-grain {
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  .bg-glow {
+    position: fixed; z-index: 0;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.12;
+  }
+  .bg-glow.a { top: -200px; right: 100px; background: #6366f1; }
+  .bg-glow.b { bottom: -300px; left: 200px; background: #818cf8; opacity: 0.07; }
+
+  /* Faux browser chrome */
+  .browser {
+    position: relative; z-index: 1;
+    width: 1120px; height: 680px;
+    margin: 60px auto 0;
+    background: #131316;
+    border-radius: 12px;
+    border: 1px solid #27272a;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03) inset;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .browser-bar {
+    height: 44px;
+    background: #18181b;
+    border-bottom: 1px solid #27272a;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .dots { display: flex; gap: 7px; }
+  .dots span {
+    width: 12px; height: 12px; border-radius: 50%;
+    display: block;
+  }
+  .dots .r { background: #ef4444; }
+  .dots .y { background: #eab308; }
+  .dots .g { background: #22c55e; }
+
+  .url-bar {
+    flex: 1;
+    height: 28px;
+    background: #0c0c0e;
+    border-radius: 6px;
+    border: 1px solid #27272a;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #71717a;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .url-bar .protocol { color: #52525b; }
+  .url-bar .path { color: #a1a1aa; }
+  .url-bar .file { color: #a78bfa; font-weight: 500; }
+
+  /* GitHub page mockup */
+  .page-content {
+    flex: 1;
+    display: flex;
+    position: relative;
+    background: #0d1117;
+    overflow: hidden;
+  }
+
+  .gh-sidebar {
+    width: 260px;
+    background: #0d1117;
+    border-right: 1px solid #21262d;
+    padding: 20px 16px;
+    flex-shrink: 0;
+  }
+
+  .gh-sidebar .repo-name {
+    font-size: 14px; font-weight: 600; color: #58a6ff;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .gh-sidebar .file-tree-item {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 5px 8px;
+    color: #8b949e;
+    border-radius: 4px;
+  }
+  .gh-sidebar .file-tree-item.active {
+    background: #1f2937;
+    color: #e4e4e7;
+  }
+
+  .gh-main {
+    flex: 1;
+    padding: 24px 32px;
+    overflow: hidden;
+  }
+
+  .gh-breadcrumb {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #8b949e;
+    margin-bottom: 16px;
+  }
+  .gh-breadcrumb span { color: #58a6ff; }
+
+  .gh-file-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 8px 8px 0 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #8b949e;
+  }
+
+  .gh-file-body {
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #c9d1d9;
+    max-height: 480px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .gh-file-body .yaml-key { color: #7ee787; }
+  .gh-file-body .yaml-val { color: #a5d6ff; }
+  .gh-file-body .heading { color: #d2a8ff; font-weight: 600; }
+  .gh-file-body .fade-out {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background: linear-gradient(transparent, #0d1117);
+  }
+
+  /* Extension popup overlay */
+  .popup-anchor {
+    position: absolute;
+    top: 0; right: 80px;
+    z-index: 10;
+  }
+
+  .popup {
+    width: 340px;
+    background: #18181b;
+    border-radius: 12px;
+    border: 1px solid #27272a;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    overflow: hidden;
+    animation: popupSlide 0.3s ease-out;
+  }
+
+  @keyframes popupSlide {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .popup-arrow {
+    width: 12px; height: 12px;
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-bottom: none; border-right: none;
+    transform: rotate(45deg);
+    position: absolute;
+    top: -7px; right: 24px;
+    z-index: 11;
+  }
+
+  .popup-inner { padding: 16px; }
+
+  .popup-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid #27272a;
+  }
+  .popup-header h2 {
+    font-size: 15px; font-weight: 600; color: #fafafa;
+    font-family: 'Outfit', sans-serif;
+  }
+  .popup-header .icon {
+    width: 20px; height: 20px;
+    background: #6366f1;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .popup-header .icon svg { width: 12px; height: 12px; }
+
+  .popup .label {
+    font-size: 10px; font-weight: 600; color: #52525b;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 3px;
+  }
+  .popup .skill-name {
+    font-size: 17px; font-weight: 700; color: #a78bfa;
+    font-family: 'Outfit', sans-serif;
+    margin-bottom: 8px;
+  }
+  .popup .desc {
+    font-size: 12px; color: #a1a1aa; line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .popup .source-val {
+    font-size: 12px; color: #a1a1aa;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 16px;
+  }
+  .popup .btn {
+    width: 100%; height: 40px;
+    background: #6366f1; color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .popup .btn:hover { background: #818cf8; }
+  .popup .btn svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+  <div class="bg-grain"></div>
+  <div class="bg-glow a"></div>
+  <div class="bg-glow b"></div>
+
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="url-bar">
+        <span class="protocol">https://</span><span class="path">github.com/anthropics/skills/blob/main/skills/</span><span class="file">frontend-design/SKILL.md</span>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="gh-sidebar">
+        <div class="repo-name">anthropics/skills</div>
+        <div class="file-tree-item">skills/</div>
+        <div class="file-tree-item" style="padding-left:24px;">claude-api/</div>
+        <div class="file-tree-item active" style="padding-left:24px;">frontend-design/</div>
+        <div class="file-tree-item" style="padding-left:40px; color:#e4e4e7;">SKILL.md</div>
+        <div class="file-tree-item" style="padding-left:24px;">remotion/</div>
+        <div class="file-tree-item" style="padding-left:24px;">snapshot-testing/</div>
+      </div>
+
+      <div class="gh-main">
+        <div class="gh-breadcrumb">
+          <span>skills</span> / <span>frontend-design</span> / SKILL.md
+        </div>
+        <div class="gh-file-header">
+          <span>SKILL.md &nbsp; · &nbsp; 4.2 KB</span>
+          <span style="color:#58a6ff;">Raw &nbsp; Blame</span>
+        </div>
+        <div class="gh-file-body">
+          <span class="yaml-key">---</span><br>
+          <span class="yaml-key">name:</span> <span class="yaml-val">frontend-design</span><br>
+          <span class="yaml-key">description:</span> <span class="yaml-val">"Create distinctive, production-grade frontend interfaces with high design quality"</span><br>
+          <span class="yaml-key">---</span><br><br>
+          <span class="heading"># Frontend Design Skill</span><br><br>
+          This skill guides creation of distinctive, production-grade<br>
+          frontend interfaces that avoid generic aesthetics.<br><br>
+          <span class="heading">## Design Thinking</span><br><br>
+          Before coding, understand the context and commit to a<br>
+          BOLD aesthetic direction:<br>
+          - **Purpose**: What problem does this interface solve?<br>
+          - **Tone**: Pick an extreme: brutally minimal, maximalist...<br>
+          - **Constraints**: Technical requirements...<br>
+          <div class="fade-out"></div>
+        </div>
+      </div>
+
+      <div class="popup-anchor">
+        <div class="popup-arrow"></div>
+        <div class="popup">
+          <div class="popup-inner">
+            <div class="popup-header">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+              </div>
+              <h2>Skill Scraper</h2>
+            </div>
+            <div class="label">Skill</div>
+            <div class="skill-name">frontend-design</div>
+            <div class="desc">Create distinctive, production-grade frontend interfaces with high design quality.</div>
+            <div class="label">Source</div>
+            <div class="source-val">anthropics/skills</div>
+            <button class="btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Install Command
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Screenshot 3 — Command Copied</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1280px; height: 800px; overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    background: #0c0c0e; position: relative;
+  }
+
+  .bg-grain {
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .bg-glow { position: fixed; z-index: 0; border-radius: 50%; filter: blur(150px); }
+  .bg-glow.a { width: 500px; height: 500px; bottom: -100px; left: 400px; background: #22c55e; opacity: 0.08; }
+  .bg-glow.b { width: 400px; height: 400px; top: -100px; right: 100px; background: #6366f1; opacity: 0.08; }
+
+  .browser {
+    position: relative; z-index: 1;
+    width: 1120px; height: 680px;
+    margin: 60px auto 0;
+    background: #131316; border-radius: 12px;
+    border: 1px solid #27272a;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03) inset;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .browser-bar {
+    height: 44px; background: #18181b;
+    border-bottom: 1px solid #27272a;
+    display: flex; align-items: center;
+    padding: 0 16px; gap: 10px; flex-shrink: 0;
+  }
+  .dots { display: flex; gap: 7px; }
+  .dots span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .dots .r { background: #ef4444; }
+  .dots .y { background: #eab308; }
+  .dots .g { background: #22c55e; }
+  .url-bar {
+    flex: 1; height: 28px; background: #0c0c0e;
+    border-radius: 6px; border: 1px solid #27272a;
+    display: flex; align-items: center; padding: 0 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #71717a;
+  }
+  .url-bar .highlight { color: #a78bfa; font-weight: 500; }
+
+  .page-content {
+    flex: 1; position: relative;
+    background: #0d1117; overflow: hidden;
+    display: flex;
+  }
+
+  /* Left side: GitHub page blurred */
+  .gh-blurred {
+    flex: 1; padding: 32px 48px;
+    filter: blur(1.5px) brightness(0.6);
+  }
+  .gh-repo-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .gh-repo-icon {
+    width: 32px; height: 32px; border-radius: 8px; background: #21262d;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gh-repo-icon svg { width: 18px; height: 18px; color: #8b949e; }
+  .gh-repo-name {
+    font-family: 'JetBrains Mono', monospace; font-size: 20px;
+    color: #58a6ff; font-weight: 600;
+  }
+  .gh-repo-name .owner { color: #8b949e; font-weight: 400; }
+  .gh-desc { font-size: 14px; color: #8b949e; margin-bottom: 24px; }
+  .gh-file-list {
+    border: 1px solid #21262d; border-radius: 8px; overflow: hidden;
+  }
+  .gh-file-list-header {
+    background: #161b22; padding: 10px 16px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #8b949e;
+    border-bottom: 1px solid #21262d;
+  }
+  .gh-file-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; border-bottom: 1px solid #21262d;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  }
+  .gh-file-row:last-child { border-bottom: none; }
+  .gh-file-row .name { color: #58a6ff; }
+  .gh-file-row .msg { color: #8b949e; font-size: 12px; flex: 1; text-align: right; }
+
+  /* Popup with success */
+  .popup-anchor { position: absolute; top: 0; right: 80px; z-index: 10; }
+  .popup-arrow {
+    width: 12px; height: 12px; background: #18181b;
+    border: 1px solid #27272a; border-bottom: none; border-right: none;
+    transform: rotate(45deg);
+    position: absolute; top: -7px; right: 24px; z-index: 11;
+  }
+  .popup {
+    width: 340px; background: #18181b;
+    border-radius: 12px; border: 1px solid #27272a;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    overflow: hidden;
+  }
+  .popup-inner { padding: 16px; }
+  .popup-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid #27272a;
+  }
+  .popup-header h2 { font-size: 15px; font-weight: 600; color: #fafafa; }
+  .popup-header .icon {
+    width: 20px; height: 20px; background: #6366f1; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .popup-header .icon svg { width: 12px; height: 12px; }
+  .popup .label {
+    font-size: 10px; font-weight: 600; color: #52525b;
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px;
+  }
+  .popup .skill-name {
+    font-size: 17px; font-weight: 700; color: #a78bfa; margin-bottom: 8px;
+  }
+  .popup .desc {
+    font-size: 12px; color: #a1a1aa; line-height: 1.5; margin-bottom: 12px;
+  }
+  .popup .source-val {
+    font-size: 12px; color: #a1a1aa;
+    font-family: 'JetBrains Mono', monospace; margin-bottom: 16px;
+  }
+  .popup .btn {
+    width: 100%; height: 40px;
+    background: #6366f1; color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .popup .btn svg { width: 14px; height: 14px; }
+
+  /* Success toast */
+  .toast {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #052e16;
+    border: 1px solid #166534;
+    border-radius: 8px;
+    display: flex; align-items: center; gap: 8px;
+    animation: toastIn 0.35s ease-out;
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .toast svg { width: 16px; height: 16px; color: #4ade80; flex-shrink: 0; }
+  .toast-text { font-size: 12px; color: #4ade80; font-weight: 500; }
+
+  /* Terminal snippet below popup */
+  .terminal-hint {
+    position: absolute;
+    top: 310px; right: 40px;
+    width: 400px; z-index: 10;
+  }
+  .terminal {
+    background: #0c0c0e;
+    border: 1px solid #27272a;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  }
+  .terminal-bar {
+    height: 32px; background: #18181b;
+    border-bottom: 1px solid #27272a;
+    display: flex; align-items: center; padding: 0 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #52525b;
+  }
+  .terminal-body {
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; line-height: 1.7;
+    color: #a1a1aa;
+  }
+  .terminal-body .prompt { color: #4ade80; }
+  .terminal-body .cmd { color: #e4e4e7; }
+  .terminal-body .dim { color: #52525b; }
+  .terminal-body .success { color: #4ade80; }
+
+  .arrow-label {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 8px;
+    font-size: 12px; color: #71717a;
+    font-weight: 500;
+  }
+  .arrow-label svg { width: 20px; height: 20px; color: #52525b; }
+</style>
+</head>
+<body>
+  <div class="bg-grain"></div>
+  <div class="bg-glow a"></div>
+  <div class="bg-glow b"></div>
+
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="url-bar">
+        <span>https://github.com/anthropics/skills/blob/main/skills/</span><span class="highlight">frontend-design/SKILL.md</span>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="gh-blurred">
+        <div class="gh-repo-header">
+          <div class="gh-repo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          </div>
+          <div class="gh-repo-name"><span class="owner">anthropics / </span>skills</div>
+        </div>
+        <div class="gh-desc">Official skill definitions for Claude Code</div>
+        <div class="gh-file-list">
+          <div class="gh-file-list-header">main &nbsp;·&nbsp; SKILL.md</div>
+          <div class="gh-file-row"><span>📄</span><span class="name">SKILL.md</span></div>
+        </div>
+      </div>
+
+      <div class="popup-anchor">
+        <div class="popup-arrow"></div>
+        <div class="popup">
+          <div class="popup-inner">
+            <div class="popup-header">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+              </div>
+              <h2>Skill Scraper</h2>
+            </div>
+            <div class="label">Skill</div>
+            <div class="skill-name">frontend-design</div>
+            <div class="desc">Create distinctive, production-grade frontend interfaces with high design quality.</div>
+            <div class="label">Source</div>
+            <div class="source-val">anthropics/skills</div>
+            <button class="btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Install Command
+            </button>
+            <div class="toast">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <span class="toast-text">Command copied to clipboard!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal-hint">
+        <div class="arrow-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          Paste in terminal to install
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">Terminal</div>
+          <div class="terminal-body">
+            <span class="prompt">$ </span><span class="cmd">mkdir -p ~/.claude/skills/frontend-design && \</span><br>
+            <span class="cmd">&nbsp;&nbsp;curl -sL "https://raw.githubusercontent.com/..." \</span><br>
+            <span class="cmd">&nbsp;&nbsp;&gt; ~/.claude/skills/frontend-design/SKILL.md</span><br><br>
+            <span class="success">Installed frontend-design ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

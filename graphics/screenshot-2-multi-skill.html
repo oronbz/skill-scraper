@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Screenshot 2 — Multi-Skill Checklist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1280px;
+    height: 800px;
+    overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    background: #0c0c0e;
+    position: relative;
+  }
+
+  .bg-grain {
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .bg-glow { position: fixed; z-index: 0; border-radius: 50%; filter: blur(150px); }
+  .bg-glow.a { width: 500px; height: 500px; top: -150px; left: 300px; background: #6366f1; opacity: 0.1; }
+  .bg-glow.b { width: 400px; height: 400px; bottom: -200px; right: 200px; background: #a78bfa; opacity: 0.06; }
+
+  .browser {
+    position: relative; z-index: 1;
+    width: 1120px; height: 680px;
+    margin: 60px auto 0;
+    background: #131316;
+    border-radius: 12px;
+    border: 1px solid #27272a;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03) inset;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  .browser-bar {
+    height: 44px; background: #18181b;
+    border-bottom: 1px solid #27272a;
+    display: flex; align-items: center;
+    padding: 0 16px; gap: 10px; flex-shrink: 0;
+  }
+  .dots { display: flex; gap: 7px; }
+  .dots span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .dots .r { background: #ef4444; }
+  .dots .y { background: #eab308; }
+  .dots .g { background: #22c55e; }
+
+  .url-bar {
+    flex: 1; height: 28px; background: #0c0c0e;
+    border-radius: 6px; border: 1px solid #27272a;
+    display: flex; align-items: center; padding: 0 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #71717a;
+  }
+  .url-bar .highlight { color: #a78bfa; font-weight: 500; }
+
+  .page-content {
+    flex: 1; position: relative;
+    background: #0d1117; overflow: hidden;
+    padding: 32px 48px;
+  }
+
+  /* GitHub repo header mockup */
+  .gh-repo-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .gh-repo-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #21262d; display: flex; align-items: center; justify-content: center;
+  }
+  .gh-repo-icon svg { width: 18px; height: 18px; color: #8b949e; }
+  .gh-repo-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; color: #58a6ff; font-weight: 600;
+  }
+  .gh-repo-name .owner { color: #8b949e; font-weight: 400; }
+
+  .gh-desc {
+    font-size: 14px; color: #8b949e; margin-bottom: 20px; line-height: 1.5;
+  }
+
+  .gh-stats { display: flex; gap: 20px; margin-bottom: 28px; }
+  .gh-stat {
+    font-size: 12px; color: #8b949e;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .gh-stat .num { color: #e4e4e7; font-weight: 600; }
+
+  /* File listing */
+  .gh-file-list {
+    border: 1px solid #21262d; border-radius: 8px;
+    overflow: hidden;
+  }
+  .gh-file-list-header {
+    background: #161b22; padding: 10px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: #8b949e;
+    border-bottom: 1px solid #21262d;
+  }
+  .gh-file-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; border-bottom: 1px solid #21262d;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  }
+  .gh-file-row:last-child { border-bottom: none; }
+  .gh-file-row .icon { color: #58a6ff; width: 16px; }
+  .gh-file-row .name { color: #58a6ff; }
+  .gh-file-row .msg { color: #8b949e; font-size: 12px; flex: 1; text-align: right; }
+
+  /* Popup */
+  .popup-anchor {
+    position: absolute; top: 0; right: 80px; z-index: 10;
+  }
+  .popup-arrow {
+    width: 12px; height: 12px; background: #18181b;
+    border: 1px solid #27272a; border-bottom: none; border-right: none;
+    transform: rotate(45deg);
+    position: absolute; top: -7px; right: 24px; z-index: 11;
+  }
+  .popup {
+    width: 340px; background: #18181b;
+    border-radius: 12px; border: 1px solid #27272a;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    overflow: hidden;
+  }
+  .popup-inner { padding: 16px; }
+
+  .popup-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid #27272a;
+  }
+  .popup-header h2 { font-size: 15px; font-weight: 600; color: #fafafa; }
+  .popup-header .icon {
+    width: 20px; height: 20px; background: #6366f1; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .popup-header .icon svg { width: 12px; height: 12px; }
+
+  .popup .found {
+    font-size: 13px; color: #a1a1aa; margin-bottom: 8px;
+  }
+  .popup .found b { color: #fafafa; font-weight: 600; }
+
+  .popup .actions-row {
+    display: flex; gap: 12px; margin-bottom: 8px;
+  }
+  .popup .btn-link {
+    background: none; border: none;
+    font-size: 12px; color: #818cf8; cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .popup .skills-list {
+    list-style: none; border: 1px solid #27272a;
+    border-radius: 8px; margin-bottom: 12px;
+    max-height: 260px; overflow-y: auto;
+  }
+  .popup .skills-list li {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 9px 10px; border-bottom: 1px solid #27272a;
+  }
+  .popup .skills-list li:last-child { border-bottom: none; }
+  .popup .skills-list input[type="checkbox"] {
+    margin-top: 2px; accent-color: #818cf8;
+    width: 14px; height: 14px;
+  }
+  .popup .skill-item-info { display: flex; flex-direction: column; gap: 1px; }
+  .popup .skill-item-name { font-weight: 500; color: #e4e4e7; font-size: 13px; }
+  .popup .skill-item-desc {
+    color: #52525b; font-size: 11px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 260px;
+  }
+
+  .popup .btn {
+    width: 100%; height: 40px;
+    background: #6366f1; color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .popup .btn svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+  <div class="bg-grain"></div>
+  <div class="bg-glow a"></div>
+  <div class="bg-glow b"></div>
+
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="url-bar">
+        <span>https://github.com/</span><span class="highlight">anthropics/skills</span>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="gh-repo-header">
+        <div class="gh-repo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+        </div>
+        <div class="gh-repo-name"><span class="owner">anthropics / </span>skills</div>
+      </div>
+      <div class="gh-desc">Official skill definitions for Claude Code — drop-in SKILL.md files that teach Claude new capabilities</div>
+      <div class="gh-stats">
+        <div class="gh-stat"><span class="num">247</span> stars</div>
+        <div class="gh-stat"><span class="num">63</span> forks</div>
+        <div class="gh-stat"><span class="num">MIT</span> license</div>
+      </div>
+      <div class="gh-file-list">
+        <div class="gh-file-list-header">main &nbsp;·&nbsp; 12 items</div>
+        <div class="gh-file-row"><span class="icon">📁</span><span class="name">skills/</span><span class="msg">Add new skills collection</span></div>
+        <div class="gh-file-row"><span class="icon">📁</span><span class="name">examples/</span><span class="msg">Usage examples</span></div>
+        <div class="gh-file-row"><span class="icon">📄</span><span class="name" style="color:#c9d1d9;">README.md</span><span class="msg">Update documentation</span></div>
+        <div class="gh-file-row"><span class="icon">📄</span><span class="name" style="color:#c9d1d9;">LICENSE</span><span class="msg">Initial commit</span></div>
+      </div>
+
+      <div class="popup-anchor">
+        <div class="popup-arrow"></div>
+        <div class="popup">
+          <div class="popup-inner">
+            <div class="popup-header">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+              </div>
+              <h2>Skill Scraper</h2>
+            </div>
+            <div class="found">Found <b>8</b> skills in <b>anthropics/skills</b></div>
+            <div class="actions-row">
+              <button class="btn-link">Select all</button>
+              <button class="btn-link">Select none</button>
+            </div>
+            <ul class="skills-list">
+              <li><input type="checkbox" checked><div class="skill-item-info"><span class="skill-item-name">frontend-design</span><span class="skill-item-desc">Create distinctive, production-grade frontend interfaces</span></div></li>
+              <li><input type="checkbox" checked><div class="skill-item-info"><span class="skill-item-name">claude-api</span><span class="skill-item-desc">Build apps with the Claude API or Anthropic SDK</span></div></li>
+              <li><input type="checkbox"><div class="skill-item-info"><span class="skill-item-name">remotion-best-practices</span><span class="skill-item-desc">Best practices for Remotion video creation in React</span></div></li>
+              <li><input type="checkbox" checked><div class="skill-item-info"><span class="skill-item-name">snapshot-testing</span><span class="skill-item-desc">Snapshot test your Swift code</span></div></li>
+              <li><input type="checkbox"><div class="skill-item-info"><span class="skill-item-name">composable-architecture</span><span class="skill-item-desc">Build Swift application logic with TCA</span></div></li>
+              <li><input type="checkbox" checked><div class="skill-item-info"><span class="skill-item-name">modern-swiftui</span><span class="skill-item-desc">Build complex SwiftUI views using best practices</span></div></li>
+              <li><input type="checkbox"><div class="skill-item-info"><span class="skill-item-name">swift-navigation</span><span class="skill-item-desc">State-driven navigation patterns in Swift</span></div></li>
+              <li><input type="checkbox"><div class="skill-item-info"><span class="skill-item-name">identified-collections</span><span class="skill-item-desc">Performant, ergonomic collection access</span></div></li>
+            </ul>
+            <button class="btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Install Command (4)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
