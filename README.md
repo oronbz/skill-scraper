@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Install Claude Code skills from GitHub with one click</strong><br>
-  A Chrome extension that detects SKILL.md files on GitHub and copies a ready-to-run install command to your clipboard.
+  A Chrome extension that detects SKILL.md files on GitHub and generates <code>npx skills add</code> commands to install them.
 </p>
 
 <p align="center">
@@ -22,8 +22,8 @@
 
 1. Browse any GitHub repo containing SKILL.md files
 2. Click the extension icon — detected skills appear instantly
-3. Hit **Copy Install Command** and paste it in your terminal
-4. Done — the skill is installed to `~/.claude/skills/`
+3. Hit **Copy Install Command** — copies an `npx skills add` command
+4. Paste in your terminal — done!
 
 ### Single Skill
 
@@ -39,7 +39,7 @@ Browse a skills repo and batch-install the ones you want.
 
 ### One Command
 
-The install command is copied to your clipboard — paste it in your terminal.
+The `npx skills add` command is copied to your clipboard — paste it in your terminal.
 
 <img src="graphics/screenshot-3-copied.png" alt="Command copied" width="800">
 

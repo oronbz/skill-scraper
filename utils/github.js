@@ -58,24 +58,15 @@ export function getApiContentsUrl(owner, repo, path) {
 }
 
 export function buildInstallCommand(owner, repo, branch, skillName, skillPath) {
-  const rawUrl = getRawUrl(owner, repo, branch, skillPath);
-  return `mkdir -p ~/.claude/skills/${skillName} && curl -sL "${rawUrl}" > ~/.claude/skills/${skillName}/SKILL.md`;
+  const repoSlug = `${owner}/${repo}`;
+  return `npx skills add ${repoSlug} -s ${skillName} -g -y`;
 }
 
 export function buildBatchInstallCommand(owner, repo, branch, skills) {
+  const repoSlug = `${owner}/${repo}`;
   if (skills.length === 1) {
-    return buildInstallCommand(
-      owner,
-      repo,
-      branch,
-      skills[0].name,
-      skills[0].path
-    );
+    return `npx skills add ${repoSlug} -s ${skills[0].name} -g -y`;
   }
-  const base = getRawUrl(owner, repo, branch, "");
-  const lines = skills.map((s) => {
-    const rawUrl = `${base}${s.path}`;
-    return `mkdir -p ~/.claude/skills/${s.name} && curl -sL "${rawUrl}" > ~/.claude/skills/${s.name}/SKILL.md && echo "Installed ${s.name}"`;
-  });
-  return lines.join(" && \\\n");
+  const skillNames = skills.map((s) => s.name).join(",");
+  return `npx skills add ${repoSlug} -s ${skillNames} -g -y`;
 }
