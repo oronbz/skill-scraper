@@ -67,6 +67,6 @@ export function buildBatchInstallCommand(owner, repo, branch, skills) {
   if (skills.length === 1) {
     return `npx skills add ${repoSlug} -s ${skills[0].name} -g -y`;
   }
-  const skillNames = skills.map((s) => s.name).join(",");
-  return `npx skills add ${repoSlug} -s ${skillNames} -g -y`;
+  const skillFlags = skills.map((s) => `-s ${s.name}`).join(" ");
+  return `npx skills add ${repoSlug} ${skillFlags} -g -y`;
 }
