@@ -6,7 +6,7 @@
 Skill Scraper — Claude Code Skill Installer
 
 ### Summary (132 char max)
-Detect and install Claude Code skills from GitHub repos with one click. Copies a ready-to-run install command to your clipboard.
+Detect and install Claude Code skills from GitHub repos with one click. Generates npx skills add commands for easy installation.
 
 ### Description
 Skill Scraper makes it effortless to discover and install Claude Code skills directly from GitHub.
@@ -14,8 +14,8 @@ Skill Scraper makes it effortless to discover and install Claude Code skills dir
 HOW IT WORKS
 1. Browse any GitHub repo containing SKILL.md files
 2. Click the extension icon — detected skills appear instantly
-3. Hit "Copy Install Command" and paste it in your terminal
-4. Done — the skill is installed to ~/.claude/skills/
+3. Hit "Copy Install Command" — copies an npx skills add command
+4. Paste in your terminal — done!
 
 SUPPORTED PAGES
 • Direct SKILL.md file pages — install a single skill
@@ -25,7 +25,7 @@ SUPPORTED PAGES
 FEATURES
 • Auto-detects skills on GitHub pages
 • Shows skill name and description from YAML frontmatter
-• Batch install — select multiple skills and get one command
+• Batch install — select multiple skills and get one npx command
 • No authentication required for public repos
 • Dark themed popup UI
 • Zero dependencies, lightweight
@@ -47,7 +47,7 @@ English
 ## Privacy
 
 ### Single purpose description
-Detects Claude Code skill files (SKILL.md) on GitHub pages and generates clipboard install commands.
+Detects Claude Code skill files (SKILL.md) on GitHub pages and generates npx skills add commands for clipboard install.
 
 ### Permission justifications
 
