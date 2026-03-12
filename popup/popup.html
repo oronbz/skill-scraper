@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Skill Scraper</h1>
+    </header>
+
+    <div id="loading" class="state">
+      <p class="muted">Detecting skills...</p>
+    </div>
+
+    <div id="no-skills" class="state hidden">
+      <p class="muted">No skills detected on this page.</p>
+      <p class="hint">Navigate to a GitHub repo containing SKILL.md files.</p>
+    </div>
+
+    <div id="single-skill" class="state hidden">
+      <div class="skill-info">
+        <span class="label">Skill</span>
+        <span id="skill-name" class="skill-name"></span>
+      </div>
+      <p id="skill-description" class="description"></p>
+      <div class="source">
+        <span class="label">Source</span>
+        <span id="skill-source"></span>
+      </div>
+      <button id="copy-single" class="btn primary">Copy Install Command</button>
+    </div>
+
+    <div id="multi-skills" class="state hidden">
+      <p class="found-count">Found <span id="skills-count"></span> skills in <span id="multi-source"></span></p>
+      <div class="actions-row">
+        <button id="select-all" class="btn-link">Select all</button>
+        <button id="select-none" class="btn-link">Select none</button>
+      </div>
+      <ul id="skills-list" class="skills-list"></ul>
+      <button id="copy-multi" class="btn primary">Copy Install Command</button>
+    </div>
+
+    <div id="status" class="status hidden"></div>
+  </div>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
