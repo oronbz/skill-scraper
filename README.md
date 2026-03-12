@@ -5,7 +5,7 @@
 <h1 align="center">Skill Scraper</h1>
 
 <p align="center">
-  <strong>Install Claude Code skills from GitHub with one click</strong><br>
+  <strong>Install agent skills from GitHub with one click</strong><br>
   A Chrome extension that detects SKILL.md files on GitHub and generates <code>npx skills add</code> commands to install them.
 </p>
 
@@ -63,26 +63,16 @@ Coming soon.
 
 1. Clone this repo:
    ```bash
-   git clone https://github.com/anthropics/skill-scraper.git
+   git clone https://github.com/oronbz/skill-scraper.git
    ```
 2. Open `chrome://extensions` in Chrome
 3. Enable **Developer mode** (top right)
 4. Click **Load unpacked** and select the cloned directory
 5. Navigate to a GitHub repo with SKILL.md files and click the extension icon
 
-## What Are Claude Code Skills?
+## What Are Agent Skills?
 
-Skills are markdown instruction files that extend [Claude Code](https://docs.anthropic.com/en/docs/claude-code)'s capabilities. Each skill is a `SKILL.md` file installed to `~/.claude/skills/` that teaches Claude Code new behaviors, workflows, and domain expertise.
-
-```
-~/.claude/skills/
-├── frontend-design/
-│   └── SKILL.md
-├── claude-api/
-│   └── SKILL.md
-└── snapshot-testing/
-    └── SKILL.md
-```
+Skills are markdown instruction files that extend AI coding agents' capabilities. Each skill is a `SKILL.md` file that teaches agents new behaviors, workflows, and domain expertise. They work with Claude Code, Cursor, Windsurf, and other agents that support the [skills convention](https://github.com/vercel-labs/skills).
 
 ## Development
 

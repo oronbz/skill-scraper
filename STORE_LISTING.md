@@ -3,13 +3,13 @@
 ## Store Listing
 
 ### Name
-Skill Scraper — Claude Code Skill Installer
+Skill Scraper — Agent Skill Installer
 
 ### Summary (132 char max)
-Detect and install Claude Code skills from GitHub repos with one click. Generates npx skills add commands for easy installation.
+Detect and install agent skills from GitHub repos with one click. Generates npx skills add commands for easy installation.
 
 ### Description
-Skill Scraper makes it effortless to discover and install Claude Code skills directly from GitHub.
+Skill Scraper makes it effortless to discover and install agent skills directly from GitHub.
 
 HOW IT WORKS
 1. Browse any GitHub repo containing SKILL.md files
@@ -30,8 +30,8 @@ FEATURES
 • Dark themed popup UI
 • Zero dependencies, lightweight
 
-WHAT ARE CLAUDE CODE SKILLS?
-Skills are markdown instruction files that extend Claude Code's capabilities. Each skill is a SKILL.md file installed to ~/.claude/skills/ that teaches Claude Code new behaviors, workflows, and domain expertise.
+WHAT ARE AGENT SKILLS?
+Skills are markdown instruction files that extend AI coding agents' capabilities. Each skill is a SKILL.md file that teaches agents new behaviors, workflows, and domain expertise. They work with Claude Code, Cursor, Windsurf, and other agents that support the skills convention.
 
 PRIVACY
 This extension only activates on github.com pages. It reads GitHub page URLs and fetches public file contents from the GitHub API. No data is collected, stored, or sent to any third party.
@@ -47,7 +47,7 @@ English
 ## Privacy
 
 ### Single purpose description
-Detects Claude Code skill files (SKILL.md) on GitHub pages and generates npx skills add commands for clipboard install.
+Detects agent skill files (SKILL.md) on GitHub pages and generates npx skills add commands for clipboard install.
 
 ### Permission justifications
 

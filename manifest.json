@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Skill Scraper",
   "version": "1.1.0",
-  "description": "Scrape SKILL.md files from GitHub and install Claude Code skills",
+  "description": "Detect and install agent skills from GitHub with one click",
   "permissions": [
     "activeTab",
     "clipboardWrite",
