@@ -18,6 +18,7 @@ async function fetchWithCache(url) {
     }
   }
   const resp = await fetch(url);
+  if (resp.status === 404) return null;
   if (!resp.ok) throw new Error(`GitHub API error: ${resp.status}`);
   const data = await resp.json();
   apiCache.set(url, { data, time: Date.now() });
@@ -34,6 +35,7 @@ async function fetchRaw(url) {
 async function listSkills(owner, repo, branch, basePath = "skills") {
   const apiUrl = getApiContentsUrl(owner, repo, basePath);
   const entries = await fetchWithCache(apiUrl);
+  if (!entries) return [];
 
   const skills = [];
   for (const entry of entries) {
@@ -43,6 +45,7 @@ async function listSkills(owner, repo, branch, basePath = "skills") {
         const subEntries = await fetchWithCache(
           getApiContentsUrl(owner, repo, `${basePath}/${entry.name}`)
         );
+        if (!subEntries) continue;
         const hasSkillMd = subEntries.some(
           (e) => e.name === "SKILL.md" && e.type === "file"
         );
