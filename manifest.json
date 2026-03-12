@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Skill Scraper",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Detect and install agent skills from GitHub with one click",
   "permissions": [
     "activeTab",
