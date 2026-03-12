@@ -31,8 +31,8 @@ async function fetchRaw(url) {
   return resp.text();
 }
 
-// List all skills in a repo's skills/ directory
-async function listSkills(owner, repo, branch, basePath = "skills") {
+// Scan a directory for subdirectories containing SKILL.md
+async function findSkillsInDir(owner, repo, branch, basePath) {
   const apiUrl = getApiContentsUrl(owner, repo, basePath);
   const entries = await fetchWithCache(apiUrl);
   if (!entries) return [];
@@ -40,7 +40,6 @@ async function listSkills(owner, repo, branch, basePath = "skills") {
   const skills = [];
   for (const entry of entries) {
     if (entry.type === "dir") {
-      // Check if this directory has a SKILL.md
       try {
         const subEntries = await fetchWithCache(
           getApiContentsUrl(owner, repo, `${basePath}/${entry.name}`)
@@ -50,7 +49,6 @@ async function listSkills(owner, repo, branch, basePath = "skills") {
           (e) => e.name === "SKILL.md" && e.type === "file"
         );
         if (hasSkillMd) {
-          // Fetch the content to get metadata
           const rawUrl = getRawUrl(
             owner,
             repo,
@@ -81,6 +79,19 @@ async function listSkills(owner, repo, branch, basePath = "skills") {
     }
   }
   return skills;
+}
+
+// List skills — try skills/ dir first, then fall back to repo root
+async function listSkills(owner, repo, branch, basePath = "skills") {
+  // Try the explicit basePath first (e.g. "skills/")
+  let skills = await findSkillsInDir(owner, repo, branch, basePath);
+  if (skills.length > 0) return skills;
+
+  // If basePath was already root, don't retry
+  if (basePath === "" || basePath === ".") return [];
+
+  // Fall back to repo root — look for any dir with SKILL.md
+  return findSkillsInDir(owner, repo, branch, "");
 }
 
 // Handle messages
