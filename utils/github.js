@@ -57,16 +57,25 @@ export function getApiContentsUrl(owner, repo, path) {
   return `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 }
 
-export function buildInstallCommand(owner, repo, branch, skillName, skillPath) {
-  const repoSlug = `${owner}/${repo}`;
-  return `npx skills add ${repoSlug} -s ${skillName} -g -y`;
+function getRepoRef(owner, repo, isPrivate) {
+  return isPrivate
+    ? `git@github.com:${owner}/${repo}.git`
+    : `${owner}/${repo}`;
 }
 
-export function buildBatchInstallCommand(owner, repo, branch, skills) {
-  const repoSlug = `${owner}/${repo}`;
+export function buildInstallCommand(owner, repo, branch, skillName, skillPath, isPrivate = false) {
+  const repoRef = getRepoRef(owner, repo, isPrivate);
+  return `npx skills add ${repoRef} -s ${skillName} -g -y`;
+}
+
+export function buildBatchInstallCommand(owner, repo, branch, skills, isPrivate = false) {
+  const repoRef = getRepoRef(owner, repo, isPrivate);
+  if (skills.length === 0) {
+    return `npx skills add ${repoRef} -g`;
+  }
   if (skills.length === 1) {
-    return `npx skills add ${repoSlug} -s ${skills[0].name} -g -y`;
+    return `npx skills add ${repoRef} -s ${skills[0].name} -g -y`;
   }
   const skillFlags = skills.map((s) => `-s ${s.name}`).join(" ");
-  return `npx skills add ${repoSlug} ${skillFlags} -g -y`;
+  return `npx skills add ${repoRef} ${skillFlags} -g -y`;
 }

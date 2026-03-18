@@ -63,9 +63,21 @@ function checkFileListingFor(filename) {
   return false;
 }
 
+function detectPrivateRepo() {
+  // GitHub shows a "Private" label/badge next to the repo name
+  const labels = document.querySelectorAll(".Label, .label");
+  for (const label of labels) {
+    if (label.textContent.trim().toLowerCase() === "private") return true;
+  }
+  // Also check for the lock icon used on private repos
+  if (document.querySelector(".octicon-lock")) return true;
+  return false;
+}
+
 function detectAndNotify() {
   const detection = parseCurrentPage();
   if (detection) {
+    detection.isPrivate = detectPrivateRepo();
     chrome.runtime.sendMessage({ type: "PAGE_DETECTED", ...detection });
   } else {
     chrome.runtime.sendMessage({ type: "PAGE_CLEARED" });

@@ -19,6 +19,16 @@
       <p class="hint">Navigate to a GitHub repo containing SKILL.md files.</p>
     </div>
 
+    <div id="private-repo" class="state hidden">
+      <p class="muted">Private repository detected.</p>
+      <p class="hint">Skills can't be listed without API access. Install all skills via SSH:</p>
+      <div class="source">
+        <span class="label">Source</span>
+        <span id="private-source"></span>
+      </div>
+      <button id="copy-private" class="btn primary">Copy Install Command</button>
+    </div>
+
     <div id="single-skill" class="state hidden">
       <div class="skill-info">
         <span class="label">Skill</span>

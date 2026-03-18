@@ -73,7 +73,7 @@ async function init() {
     return;
   }
 
-  const { pageType, owner, repo, branch, path, skillName } = detection;
+  const { pageType, owner, repo, branch, path, skillName, isPrivate } = detection;
 
   if (pageType === "skill_file") {
     // Single skill — fetch its content for metadata
@@ -105,6 +105,7 @@ async function init() {
         repo,
         branch,
         skills: [{ name: skillName, path }],
+        isPrivate,
       });
       resp.then((r) => copyToClipboard(r.command));
     });
@@ -145,6 +146,7 @@ async function init() {
           repo,
           branch,
           skills: [{ name: skillName, path: skillPath }],
+          isPrivate,
         })
         .then((r) => copyToClipboard(r.command));
     });
@@ -166,15 +168,35 @@ async function init() {
         repo,
         branch,
         basePath,
+        isPrivate,
       });
 
-      if (result.error) {
+      if (result.error && !isPrivate) {
         showState("no-skills");
         showStatus(result.error, "error");
         return;
       }
 
-      detectedSkills = result.skills;
+      detectedSkills = result.skills || [];
+
+      if (detectedSkills.length === 0 && isPrivate) {
+        // Private repo — API can't list skills, offer install-all via SSH
+        showState("private-repo");
+        $("#private-source").textContent = `${owner}/${repo}`;
+        $("#copy-private").addEventListener("click", () => {
+          chrome.runtime
+            .sendMessage({
+              type: "GET_INSTALL_COMMAND",
+              owner,
+              repo,
+              branch,
+              skills: [],
+              isPrivate: true,
+            })
+            .then((r) => copyToClipboard(r.command));
+        });
+        return;
+      }
 
       if (detectedSkills.length === 0) {
         showState("no-skills");
@@ -186,6 +208,24 @@ async function init() {
       $("#multi-source").textContent = `${owner}/${repo}`;
       renderSkillsList(detectedSkills);
     } catch (err) {
+      if (isPrivate) {
+        // Private repo — API failed, offer install-all via SSH
+        showState("private-repo");
+        $("#private-source").textContent = `${owner}/${repo}`;
+        $("#copy-private").addEventListener("click", () => {
+          chrome.runtime
+            .sendMessage({
+              type: "GET_INSTALL_COMMAND",
+              owner,
+              repo,
+              branch,
+              skills: [],
+              isPrivate: true,
+            })
+            .then((r) => copyToClipboard(r.command));
+        });
+        return;
+      }
       showState("no-skills");
       showStatus(err.message, "error");
     }
@@ -225,6 +265,7 @@ $("#copy-multi")?.addEventListener("click", () => {
         repo: detection.repo,
         branch: detection.branch,
         skills: selected,
+        isPrivate: detection.isPrivate,
       })
       .then((r) => copyToClipboard(r.command));
   });

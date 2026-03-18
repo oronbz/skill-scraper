@@ -127,10 +127,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === "FETCH_SKILLS") {
-    const { owner, repo, branch, basePath } = msg;
+    const { owner, repo, branch, basePath, isPrivate } = msg;
     listSkills(owner, repo, branch, basePath || "skills")
-      .then((skills) => sendResponse({ skills }))
-      .catch((err) => sendResponse({ error: err.message }));
+      .then((skills) => sendResponse({ skills, isPrivate }))
+      .catch((err) => sendResponse({ error: err.message, isPrivate }));
     return true;
   }
 
@@ -147,8 +147,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === "GET_INSTALL_COMMAND") {
-    const { owner, repo, branch, skills } = msg;
-    const command = buildBatchInstallCommand(owner, repo, branch, skills);
+    const { owner, repo, branch, skills, isPrivate } = msg;
+    const command = buildBatchInstallCommand(owner, repo, branch, skills, isPrivate);
     sendResponse({ command });
     return;
   }
