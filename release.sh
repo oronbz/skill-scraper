@@ -26,7 +26,6 @@ zip -r "$ZIP_NAME" . \
   -x "graphics/*" \
   -x "STORE_LISTING.md" \
   -x ".gitignore" \
-  -x "*.html" \
   -x "release.sh" \
   -x "skill-scraper-v*.zip"
 
