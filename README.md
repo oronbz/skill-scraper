@@ -10,6 +10,16 @@
 </p>
 
 <p align="center">
+  <a href="https://chromewebstore.google.com/detail/skill-scraper/fkgabjaochmnikcgbaojmpnfncdapnae"><strong>Install from Chrome Web Store →</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/skill-scraper/fkgabjaochmnikcgbaojmpnfncdapnae"><img src="https://img.shields.io/chrome-web-store/v/fkgabjaochmnikcgbaojmpnfncdapnae" alt="Chrome Web Store Version"></a>
+  <a href="https://chromewebstore.google.com/detail/skill-scraper/fkgabjaochmnikcgbaojmpnfncdapnae"><img src="https://img.shields.io/chrome-web-store/users/fkgabjaochmnikcgbaojmpnfncdapnae" alt="Chrome Web Store Users"></a>
+  <a href="#license"><img src="https://img.shields.io/github/license/oronbz/skill-scraper" alt="License"></a>
+</p>
+
+<p align="center">
   <a href="#install">Install</a> •
   <a href="#how-it-works">How It Works</a> •
   <a href="#supported-pages">Supported Pages</a> •
@@ -55,9 +65,7 @@ The `npx skills add` command is copied to your clipboard — paste it in your te
 
 ### Chrome Web Store
 
-Coming soon.
-
-<!-- [**Install from Chrome Web Store →**](https://chrome.google.com/webstore/detail/...) -->
+[**Install from Chrome Web Store →**](https://chromewebstore.google.com/detail/skill-scraper/fkgabjaochmnikcgbaojmpnfncdapnae)
 
 ### Manual Install (Developer Mode)
 
